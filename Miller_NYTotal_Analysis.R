@@ -51,10 +51,17 @@ LFM.ag.unique$sc.Illumination <- scale(LFM.ag.unique$Illumination)
 #### RUN MODELS FEMALES ####
 
 #model suite
-red1 <- lme(rank(totalTime) ~ 1, random=list(~1|RFID), data=LFF.ag.unique)
-red2 <- lme(rank(totalTime) ~ Ch.Year + Sc.DOY  + sc.cloud, random=list(~1|RFID), data=LFF.ag.unique)
-red3 <- lme(rank(totalTime) ~ Ch.Year + Sc.DOY  + sc.cloud + sc.Illumination, random=list(~1|RFID), data=LFF.ag.unique)
-red4 <- lme(rank(totalTime) ~ Ch.Year + Sc.DOY  + sc.cloud + sc.Illumination + sc.cloud * sc.Illumination, random=list(~1|RFID), data=LFF.ag.unique)
+red1 <- lme(rank(totalTime) ~ 1, random=list(~1|RFID), data=LFF.ag.unique, method = 'ML')
+red2 <- lme(rank(totalTime) ~ Ch.Year + Sc.DOY  + sc.cloud, random=list(~1|RFID), data=LFF.ag.unique, method = 'ML')
+red3 <- lme(rank(totalTime) ~ Ch.Year + Sc.DOY  + sc.cloud + sc.Illumination, random=list(~1|RFID), data=LFF.ag.unique, method = 'ML')
+red4 <- lme(rank(totalTime) ~ Ch.Year + Sc.DOY  + sc.cloud + sc.Illumination + sc.cloud * sc.Illumination, random=list(~1|RFID), data=LFF.ag.unique, method = 'ML')
+
+#model suite with DOY^2
+red1 <- lme(rank(totalTime) ~ 1, random=list(~1|RFID), data=LFF.ag.unique, method = 'ML')
+red2 <- lme(rank(totalTime) ~ Ch.Year + Sc.DOY^2  + sc.cloud, random=list(~1|RFID), data=LFF.ag.unique, method = 'ML')
+red3 <- lme(rank(totalTime) ~ Ch.Year + Sc.DOY^2  + sc.cloud + sc.Illumination, random=list(~1|RFID), data=LFF.ag.unique, method = 'ML')
+red4 <- lme(rank(totalTime) ~ Ch.Year + Sc.DOY^2  + sc.cloud + sc.Illumination + sc.cloud * sc.Illumination, random=list(~1|RFID), data=LFF.ag.unique, method = 'ML')
+
 
 #review
 model.sel(red1, red2, red3, red4)  
@@ -80,7 +87,7 @@ mylist <- list(cloud = seq(0, 1, by = 0.15), Illumination = c(illa, ill, illb))
 cols = c('navyblue', 'cornflowerblue', 'grey')
 
 #base model
-red4.1 <- lme(rank(totalTime) ~ Ch.Year + JDate  + cloud + Illumination + cloud * Illumination, random=list(~1|RFID), data=LFF.ag.unique)
+red4.1 <- lme(rank(totalTime) ~ Ch.Year + JDate^2  + cloud + Illumination + cloud * Illumination, random=list(~1|RFID), data=LFF.ag.unique)
 
 #plot
 plotmoon <- plot_model(red4.1, type = 'eff', terms = c('cloud', 'Illumination'), color=c('navyblue', 'cornflowerblue', 'grey')) + 
@@ -96,10 +103,17 @@ LFM.ag.unique$logflip_totaltime <- log(LFM.ag.unique$flip_totaltime)
 LFM.ag.unique$scale_logflip_totaltime <- scale(LFM.ag.unique$logflip_totaltime)
 
 #model suite
-red1 <- lme(rank(totalTime) ~ 1, random=list(~1|RFID), data=LFM.ag.unique)
-red2 <- lme(rank(totalTime) ~ Ch.Year + Sc.DOY  + sc.cloud, random=list(~1|RFID), data=LFM.ag.unique)
-red3 <- lme(rank(totalTime) ~ Ch.Year + Sc.DOY  + sc.cloud + sc.Illumination, random=list(~1|RFID), data=LFM.ag.unique)
-red4 <- lme(rank(totalTime) ~ Ch.Year + Sc.DOY  + sc.cloud + sc.Illumination + sc.cloud * sc.Illumination, random=list(~1|RFID), data=LFM.ag.unique)
+red1 <- lme(rank(totalTime) ~ 1, random=list(~1|RFID), data=LFM.ag.unique, method = 'ML')
+red2 <- lme(rank(totalTime) ~ Ch.Year + Sc.DOY  + sc.cloud, random=list(~1|RFID), data=LFM.ag.unique, method = 'ML')
+red3 <- lme(rank(totalTime) ~ Ch.Year + Sc.DOY  + sc.cloud + sc.Illumination, random=list(~1|RFID), data=LFM.ag.unique, method = 'ML')
+red4 <- lme(rank(totalTime) ~ Ch.Year + Sc.DOY  + sc.cloud + sc.Illumination + sc.cloud * sc.Illumination, random=list(~1|RFID), data=LFM.ag.unique, method = 'ML')
+
+#model suite, DOY^2
+red1 <- lme(rank(totalTime) ~ 1, random=list(~1|RFID), data=LFM.ag.unique, method = 'ML')
+red2 <- lme(rank(totalTime) ~ Ch.Year + Sc.DOY^2  + sc.cloud, random=list(~1|RFID), data=LFM.ag.unique, method = 'ML')
+red3 <- lme(rank(totalTime) ~ Ch.Year + Sc.DOY^2  + sc.cloud + sc.Illumination, random=list(~1|RFID), data=LFM.ag.unique, method = 'ML')
+red4 <- lme(rank(totalTime) ~ Ch.Year + Sc.DOY^2  + sc.cloud + sc.Illumination + sc.cloud * sc.Illumination, random=list(~1|RFID), data=LFM.ag.unique, method = 'ML')
+
 
 #review
 model.sel(red1, red2, red3, red4)  

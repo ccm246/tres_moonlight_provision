@@ -29,7 +29,7 @@ library(chron)
 library(emmeans)
 library(dabestr)
 
-#setwd("/Users/colleenmiller/Dropbox/TRES LUNAR/Cloud Data/")
+setwd("/Users/colleenmiller/Dropbox/TRES LUNAR/Cloud Data/")
 
 akcatot <- read.csv('total_alaskacali.csv', header=T)
 
@@ -47,19 +47,17 @@ head(akcatot)
 #### MODEL ONSET DATA ####
 
 #run series of models
-m1 <- lmer(starttime.sqrtsc ~ 1 + (1|NestNumber), data=akcatot)
-m2 <- lmer(starttime.sqrtsc ~ site + year + Sunrisetime.sc  + (1|NestNumber), data=akcatot)
-m3 <- lmer(starttime.sqrtsc ~ site + year + Sunrisetime.sc   + Illumination.sc + (1|NestNumber), data=akcatot)
-m4 <- lmer(starttime.sqrtsc ~ site + year + Sunrisetime.sc   + Illumination.sc + site*Illumination.sc + (1|NestNumber), data=akcatot)
+m1 <- lmer(starttime.sqrtsc ~ 1 + (1|NestNumber), data=akcatot, REML = F)
+m2 <- lmer(starttime.sqrtsc ~ site + year + Sunrisetime.sc  + (1|NestNumber), data=akcatot, REML = F)
+m3 <- lmer(starttime.sqrtsc ~ site + year + Sunrisetime.sc   + Illumination.sc + (1|NestNumber), data=akcatot, REML = F)
+m4 <- lmer(starttime.sqrtsc ~ site + year + Sunrisetime.sc   + Illumination.sc + site*Illumination.sc + (1|NestNumber), data=akcatot, REML = F)
 
 #look into results
 model.sel(m1, m2, m3, m4) 
 summary(m4)
 anova(m4)
 confint(m4, level=0.95)
-summary(m2)
-anova(m2)
-confint(m2, level=0.95)
+
 
 #### SET UP ONSET PLOTS ####
 
@@ -219,18 +217,17 @@ akcatot$totaltime.log <- log(akcatot$totaltime)
 akcatot$totaltime.sc <- scale(akcatot$totaltime)
 
 #mixed model suite
-m1 <- lmer(totaltime.sc ~ 1 + (1|NestNumber), data=akcatot)
-m2 <- lmer(totaltime.sc ~ site + year + Sunrisetime.sc  + (1|NestNumber), data=akcatot)
-m3 <- lmer(totaltime.sc ~ site + year + Sunrisetime.sc   + Illumination.sc + (1|NestNumber), data=akcatot)
-m4 <- lmer(totaltime.sc ~ site + year + Sunrisetime.sc   + Illumination.sc + site*Illumination.sc + (1|NestNumber), data=akcatot)
+m1 <- lmer(totaltime.sc ~ 1 + (1|NestNumber), data=akcatot, REML = F)
+m2 <- lmer(totaltime.sc ~ site + year + Sunrisetime.sc  + (1|NestNumber), data=akcatot, REML = F)
+m3 <- lmer(totaltime.sc ~ site + year + Sunrisetime.sc   + Illumination.sc + (1|NestNumber), data=akcatot, REML = F)
+m4 <- lmer(totaltime.sc ~ site + year + Sunrisetime.sc   + Illumination.sc + site*Illumination.sc + (1|NestNumber), data=akcatot, REML = F)
 
 #check results
 model.sel(m1, m2, m3, m4)
 summary(m4)#top 
-confint(m4)
+confint(m4, level=0.95)
 anova(m4)
-summary(m2)#top 
-confint(m2)
+
 
 #### ACTUAL TOTAL PLOTS ####
 

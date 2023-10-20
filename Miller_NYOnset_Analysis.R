@@ -29,7 +29,7 @@ library(lubridate)
 library(chron)
 library(emmeans)
 
-#setwd("/Users/colleenmiller/Dropbox/TRES LUNAR/Cloud Data")
+setwd("/Users/colleenmiller/Dropbox/TRES LUNAR/Cloud Data")
 
 #read in data
 onsetfem.ag <- read.csv('Onset_Female_Aggregated.csv')
@@ -46,12 +46,25 @@ onsetfem.ag$Ch.Year <- as.character(onsetfem.ag$Sc.Year)
 #### MODELING FEMALES ####
 
 #models for females onset
-red1 <- lme(log_sec ~ 1, random=list(~1|RFID), data=onsetfem.ag)
-red2 <- lme(log_sec ~ Ch.Year + Sc.DOY  + sc.cloud, random=list(~1|RFID), data=onsetfem.ag)
-red3 <- lme(log_sec ~ Ch.Year + Sc.DOY  + sc.cloud + sc.illum, random=list(~1|RFID), data=onsetfem.ag)
-red4 <- lme(log_sec ~ Ch.Year + Sc.DOY  + sc.illum + sc.cloud + sc.cloud * sc.illum, random=list(~1|RFID), data=onsetfem.ag)
+red1 <- lme(log_sec ~ 1, random=list(~1|RFID), data=onsetfem.ag, method = 'ML')
+red2 <- lme(log_sec ~ Ch.Year + Sc.DOY  + sc.cloud, random=list(~1|RFID), data=onsetfem.ag, method = 'ML')
+red3 <- lme(log_sec ~ Ch.Year + Sc.DOY  + sc.cloud + sc.illum, random=list(~1|RFID), data=onsetfem.ag, method = 'ML')
+red4 <- lme(log_sec ~ Ch.Year + Sc.DOY  + sc.cloud * sc.illum, random=list(~1|RFID), data=onsetfem.ag, method = 'ML')
 
 model.sel(red1, red2, red3, red4)  
+summary(red4)
+intervals(red4, level = 0.95)
+
+#models for females onset, DOY^2
+red1 <- lme(log_sec ~ 1, random=list(~1|RFID), data=onsetfem.ag, method = 'ML')
+red2 <- lme(log_sec ~ Ch.Year + Sc.DOY^2  + sc.cloud, random=list(~1|RFID), data=onsetfem.ag, method = 'ML')
+red3 <- lme(log_sec ~ Ch.Year + Sc.DOY^2  + sc.cloud + sc.illum, random=list(~1|RFID), data=onsetfem.ag, method = 'ML')
+red4 <- lme(log_sec ~ Ch.Year + Sc.DOY^2  + sc.cloud * sc.illum, random=list(~1|RFID), data=onsetfem.ag, method = 'ML')
+
+model.sel(red1, red2, red3, red4)  
+summary(red4)
+intervals(red4, level = 0.95)
+
 summary(red3)
 intervals(red3, level = 0.95)
 
@@ -129,7 +142,7 @@ summonsetfem <- summonsetfem[summonsetfem$Seconds < 24000,]
 pd <- position_dodge(0.1) # move them .05 to the left and right
 
 #base model seconds
-red3.1 <- lme(Seconds ~ Year + JDate  + cloud + Illumination, random=list(~1|RFID), data=onsetfem.ag)
+red3.1 <- lme(Seconds ~ Year + JDate^2  + cloud + Illumination, random=list(~1|RFID), data=onsetfem.ag)
 
 #output plot seconds
 ggplot(summonsetfem, aes(x=ill5, y=Seconds, colour='black')) + theme_classic() +
@@ -173,15 +186,24 @@ onsetmal.ag$sc.cloud <- scale(onsetmal.ag$cloud)
 onsetmal.ag$sc.illum <- scale(onsetmal.ag$Illumination)
 
 #EVALUATE ONLY SIMPLIFIED MODEL SUITE AND RUN MODELS
-red1 <- lme(log_sec ~ 1, random=list(~1|RFID), data=onsetmal.ag)
-red2 <- lme(log_sec ~ Ch.Year + Sc.DOY  + sc.cloud, random=list(~1|RFID), data=onsetmal.ag)
-red3 <- lme(log_sec ~ Ch.Year + Sc.DOY  + sc.cloud + sc.illum, random=list(~1|RFID), data=onsetmal.ag)
-red4 <- lme(log_sec ~ Ch.Year + Sc.DOY  + sc.illum + sc.cloud + sc.cloud * sc.illum, random=list(~1|RFID), data=onsetmal.ag)
+red1 <- lme(log_sec ~ 1, random=list(~1|RFID), data=onsetmal.ag, method = 'ML')
+red2 <- lme(log_sec ~ Ch.Year + Sc.DOY  + sc.cloud, random=list(~1|RFID), data=onsetmal.ag, method = 'ML')
+red3 <- lme(log_sec ~ Ch.Year + Sc.DOY  + sc.cloud + sc.illum, random=list(~1|RFID), data=onsetmal.ag, method = 'ML')
+red4 <- lme(log_sec ~ Ch.Year + Sc.DOY  + sc.cloud * sc.illum, random=list(~1|RFID), data=onsetmal.ag, method = 'ML')
 
 model.sel(red1, red2, red3, red4)  
 summary(red3)
 intervals(red3, level = 0.95)
 
+#EVALUATE ONLY SIMPLIFIED MODEL SUITE AND RUN MODELS, DOY^2
+red1 <- lme(log_sec ~ 1, random=list(~1|RFID), data=onsetmal.ag, method = 'ML')
+red2 <- lme(log_sec ~ Ch.Year + Sc.DOY^2  + sc.cloud, random=list(~1|RFID), data=onsetmal.ag, method = 'ML')
+red3 <- lme(log_sec ~ Ch.Year + Sc.DOY^2  + sc.cloud + sc.illum, random=list(~1|RFID), data=onsetmal.ag, method = 'ML')
+red4 <- lme(log_sec ~ Ch.Year + Sc.DOY^2  + sc.cloud * sc.illum, random=list(~1|RFID), data=onsetmal.ag, method = 'ML')
+
+model.sel(red1, red2, red3, red4)  
+summary(red3)
+intervals(red3, level = 0.95)
 
 #### CLUTCH INITIATION ####
 
@@ -195,3 +217,14 @@ summary(model)
 #quick plot
 plot(HDJ ~ Illumination, onsetfem.ag, pch=19, col = alpha('black', .7), xlab = 'Illumination (%)', ylab = 'Nest Hatch Date (DOY)')
 
+####### MOONLIGHT YEAR VARIATION PLOT ######
+
+head(onsetfem.ag)
+
+ggplot(data = onsetfem.ag, aes(log_sec*Illumination*Year)) +
+  geom_point(color='steelblue')
+
+tiff("moonyearsuppfigure.tif", units="in", width=5, height=4, res=600)
+q <- ggplot(onsetfem.ag, aes(x=Illumination, y=log_sec)) + geom_point(color = alpha('steelblue', .5)) + theme_classic() + theme(text = element_text(size=8))+ xlab('Illumination (%)') + ylab('Provisioning Onset (Log Seconds from Midnight)')
+q + facet_wrap(~Year) + theme(text = element_text(size=8), axis.text.x = element_text(angle = 50, hjust = 1))
+dev.off() 
